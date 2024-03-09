@@ -35,7 +35,7 @@ body {
     }
 }
 
-.table-container {
+.container {
     width: 80%;
     position: absolute;
     size: 100%;
@@ -45,4 +45,6 @@ body {
     padding: 10px;
     background-color: #000000bb;
     border-radius: 10px;
+    display: flex;
+    flex-direction: column;
 }

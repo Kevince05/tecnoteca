@@ -38,9 +38,6 @@ if (isset($_POST['logout'])) {
                         <a class="nav-link active" href="reservation.php">Prenota Qui</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="avaiability.php">Disponibilità</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link active" href="history.php">Cronologia Transazioni</a>
                     </li>
                 </ul>   
