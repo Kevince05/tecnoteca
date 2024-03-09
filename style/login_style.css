@@ -7,6 +7,16 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
+    -webkit-animation: bg_move 1s cubic-bezier(.22, .05, 0, .97) forwards;
+}
+
+@-webkit-keyframes bg_move {
+    0% {
+        background-position: top center;
+    }
+    100% {
+        background-position: bottom center;
+    }
 }
 
 .container {
@@ -16,10 +26,6 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     width: 300px;
     text-align: left;
-}
-
-.container form {
-    margin-bottom: 10px;
 }
 
 .container form input {

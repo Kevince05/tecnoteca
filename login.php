@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body <?php 
         $bga = ["login_backgrounds/background.png","login_backgrounds/background1.png","login_backgrounds/background2.png","login_backgrounds/background3.png"];
-        echo 'style="background-image: url(' . $bga[array_rand($bga,1)] . '); background-size: stretch; background-repeat: no-repeat; background-attachment: fixed; background-position: center;"';
+        echo 'style="background-image: url(' . $bga[array_rand($bga,1)] . ');"';
        ?>>
     <div style="display: flex; flex-direction: column">
         <div class="container">
