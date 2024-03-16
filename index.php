@@ -1,15 +1,15 @@
 <?php
 session_start();
 
-// Check if user is not logged in
-if (!isset($_SESSION['usr'])) {
+// Logout functionality
+if (isset($_POST['requestType'])) {
+    session_destroy();
     header("Location: login.php");
     exit;
 }
 
-// Logout functionality
-if (isset($_POST['logout'])) {
-    session_destroy();
+// Check if user is not logged in
+if (!isset($_SESSION['usr'])) {
     header("Location: login.php");
     exit;
 }
@@ -18,7 +18,7 @@ if (isset($_POST['logout'])) {
 <html>
 
 <head>
-    <title>Tecnoteca Pubblica</title>
+    <title>Tecnoteca Online</title>
     <link rel="stylesheet" type="text/css" href="style/index_style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -41,14 +41,14 @@ if (isset($_POST['logout'])) {
                         <a class="nav-link active" href="history.php">Cronologia Transazioni</a>
                     </li>
                 </ul>   
-                <form method="post" action="" class="d-flex">
-                    <input type="submit" name="logout" value="Logout">
+                <form method="post" action="index.php"" class="d-flex">
+                    <input type="submit" class="btn btn-danger" name="requestType" value="Logout">
                 </form>
             </div>
         </div>
     </nav>
     <div class="center-text">
-        <h1>Tecnoteca Pubblica</h1>
+        <h1>Tecnoteca Online</h1>
     </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

@@ -12,13 +12,6 @@ if (!isset($_SESSION['usr'])) {
     header("Location: login.php");
     exit;
 }
-
-// Logout functionality
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("Location: login.php");
-    exit;
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -47,14 +40,14 @@ if (isset($_POST['logout'])) {
                         <a class="nav-link active" href="history.php">Cronologia Transazioni</a>
                     </li>
                 </ul>
-                <form method="post" action="" class="d-flex">
-                    <input type="submit" name="logout" value="Logout">
+                <form method="post" action="index.php" class="d-flex">
+                    <input type="submit" class="btn btn-danger" name="requestType" value="Logout">
                 </form>
             </div>
         </div>
     </nav>
     <div class="container">
-        <table class="table" style="margin-bottom: 0px;">
+        <table id="dataTable" class="table" style="margin-bottom: 0px;">
             <thead>
                 <tr>
                     <th scope="col">Nome</th>
@@ -83,23 +76,69 @@ if (isset($_POST['logout'])) {
         </table>
         <form action="post">
             <fieldset enabled>
-                <div class="form-group">
-                    <label for="disabledTextInput">Disabled input</label>
-                    <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
+                <div class="form-row">
+                    <div class="col">
+                        <label for="centroSelect">Centro</label>
+                        <select id="centroSelect" class="form-control">
+                            <option>-Select-</option>
+                            <?php
+                            $result = $db->query("SELECT nome FROM centri");
+                            foreach ($result as $row) {
+                                echo "<option>" . $row['nome'] . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="disabledSelect">Disabled select menu</label>
-                    <select id="disabledSelect" class="form-control">
-                        <option>Disabled select</option>
-                    </select>
+                <div class="row">
+                    <div class="col pe-1">
+                        <label for="categoriaSelect">Categoria Oggetto</label>
+                        <select id="categoriaSelect" class="form-control">
+                        <option>-Select-</option>
+                        </select>
+                    </div>
+                    <div class="col-3 ps-1">
+                        <label for="categoriaQuantità">Quantità</label>
+                        <input id="categoriaQuantità" class="form-control" type="number" min="1" max="1">
+                        <script>    
+                            centroSelect = document.getElementById("centroSelect")
+                            categoriaSelect = document.getElementById("categoriaSelect")
+                            categoriaQuantità = document.getElementById("categoriaQuantità")
+                            dataTable = document.getElementById("dataTable")
+                            dataHeaders = dataTable.querySelectorAll("th")
+
+                            centroSelect.onchange = () => {
+                                categoriaSelect.innerHTML = "<option>-Select-</option>"
+                                dataTable.querySelectorAll("tr").forEach((row, index) => {
+                                    if (index > 0) {
+                                        if (row.cells[0].innerText == centroSelect.value) {
+                                            for (let i = 1; i < row.cells.length; i++) {
+                                                if (row.cells[i].innerText != 0) {
+                                                    option = document.createElement("option")
+                                                    option.innerText = dataHeaders[i].innerText
+                                                    categoriaSelect.appendChild(option)
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
+                            }
+                            categoriaSelect.onchange = () => {
+                                dataTable.querySelectorAll("tr").forEach((row, index) => {
+                                    console.log(row.cells[0])
+                                    if(row.cells[0] = centroSelect.value){
+                                        row.cells[].forEach((cell, index) => {
+                                            if(cell.innerText == categoriaSelect.value){
+                                                categoriaQuantità.max = cell.innerText
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        </script>
+                    </div>
                 </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="disabledFieldsetCheck" disabled>
-                    <label class="form-check-label" for="disabledFieldsetCheck">
-                        Can't check this
-                    </label>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <input type="submit" class="btn btn-primary mt-2" name="requestType" value="Prenota">
             </fieldset>
         </form>
     </div>
