@@ -37,9 +37,13 @@ if (!isset($_SESSION['usr'])) {
                     <li class="nav-item">
                         <a class="nav-link active" href="reservation.php">Prenota Qui</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="history.php">Cronologia Transazioni</a>
-                    </li>
+                    <?php
+                    if ($_SESSION['admin']) {
+                        echo '<li class="nav-item">
+                                <a class="nav-link active" href="admin.php">Amministrazione</a>
+                              </li>';
+                    }
+                    ?>
                 </ul>   
                 <form method="post" action="index.php"" class="d-flex">
                     <input type="submit" class="btn btn-danger" name="requestType" value="Logout">

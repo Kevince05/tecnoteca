@@ -1,7 +1,7 @@
 <?php
 session_start();
 $error = null;
-$db = new mysqli("localhost", "root", "", "enoteca");
+$db = new mysqli("localhost", "root", "", "tecnoteca");
 
 if ($db->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -12,13 +12,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pwd = md5($_POST["pwd"]);
 
     if ($_POST["submit_type"] === "Login") {
-        $prep = $db->prepare("SELECT username, password FROM utenti WHERE username=? AND password=?");
+        $prep = $db->prepare("SELECT admin FROM utenti WHERE username=? AND password=?");
         $prep->bind_param("ss", $usr, $pwd);
         $prep->execute();
         $result = $prep->get_result();
         if ($result->num_rows == 1) {
             $_SESSION["usr"] = $usr;
             $_SESSION["md5_pwd"] = $pwd;
+            $_SESSION["admin"] = $result->fetch_assoc()["admin"] === 1 ? true : false;
             header("Location:index.php");
         } else {
             $error = "Wrong user or password";
@@ -26,10 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $prep = $db->prepare("INSERT INTO utenti (username, password) VALUE (?,?)");
         $prep->bind_param("ss", $usr, $pwd);
-        if ($prep->execute()) {     
-            $_SESSION["usr"] = $usr;
-            $_SESSION["md5_pwd"] = $pwd;
-            header("Location:index.php");
+        if ($prep->execute()) {
+            header("Location:ilogin.php");
         } else {
             $error = "Error:" . $db->error;
         }
