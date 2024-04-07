@@ -40,6 +40,12 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 $error = "Error:" . $db->error;
             }
             break;
+        case "Ritornato":
+            $id = $_POST['id'];
+            if (!$db->query("UPDATE oggetti SET fk_id_utente = NULL WHERE id_oggetto = $id")) {
+                $error = "Error:" . $db->error;
+            }
+            break;
     }
 }
 
@@ -57,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $bga = ["login_backgrounds/background.png", "login_backgrounds/background1.png", "login_backgrounds/background2.png", "login_backgrounds/background3.png"];
         echo 'style="background-image: url(' . $bga[array_rand($bga, 1)] . '); backgound-repeat:no-repeat; background-size:cover;" data-bs-theme="dark"';
         ?>>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -70,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                     <?php
                     if ($_SESSION['admin']) {
                         echo '<li class="nav-item">
-                                <a class="nav-link disables" href="admin.php">Amministrazione</a>
+                                <a class="nav-link disabled" href="admin.php">Amministrazione</a>
                               </li>';
                     }
                     ?>
@@ -79,8 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                     <input type="submit" class="btn btn-danger" name="requestType" value="Logout">
                 </form>
             </div>
-        </div>
     </nav>
+    </divc>
     <div class="container">
         <table class="table table-striped">
             <thead>
@@ -90,27 +96,28 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                     <th scope="col">Centro</th>
                     <th scope="col">Posseduto da</th>
                     <th scope="col">Prenotabile</th>
-                    <th scope="col"></th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
                 $result = $db->query("SELECT * FROM oggetti o LEFT JOIN centri c ON o.fk_id_centro = c.id_centro LEFT JOIN utenti u ON o.fk_id_utente = u.id_utente ORDER BY o.id_oggetto ASC");
                 while ($row = $result->fetch_assoc()) {
-                    echo '<tr class="' . ($row["prenotabile"] == 0 ?($row["username"] == NULL?"table-danger":"table-primary"):"") . '">
+                    echo '<tr class="' . ($row["prenotabile"] == 0 ? ($row["username"] == NULL ? "table-danger" : "table-primary") : "") . '">
                             <td>' . $row["id_oggetto"] . '</th>
                             <td>' . $row["categoria"] . '</td>
                             <td>' . $row["nome"] . '</td>
                             <td>' . ($row["username"] == NULL ? "NULL" : $row["username"]) . '</td>
                             <form method="post">
-                                <td><select class="form-select" ' . ($row["username"] == NULL? "" : "disabled") . ' name="prenotabile">
+                                <td><select class="form-select ' . ($row["username"] == NULL ? "" : "visually-hidden") . '" name="prenotabile">
                                     <option value="1" ' . ($row["prenotabile"] == 1 ? "selected" : "") . '>Si</option>
                                     <option value="0" ' . ($row["prenotabile"] == 0 ? "selected" : "") . '>No</option>   
                                 </td>
                                 <td>
                                     <input type="hidden" name="id" value="' . $row["id_oggetto"] . '">
-                                    <input type="submit" class="btn btn-danger" ' . ($row["username"] == NULL? "" : "disabled") . ' name="requestType" value="Elimina">
-                                    <input type="submit" class="btn btn-primary" ' . ($row["username"] == NULL? "" : "disabled") . ' name="requestType" value="Edita">
+                                    <input type="submit" class="btn btn-secondary ' . ($row["username"] == NULL ? "" : "visually-hidden") . '" name="requestType" value="Edita">
+                                    <input type="submit" class="btn btn-danger ' . ($row["username"] == NULL ? "" : "visually-hidden") . '" name="requestType" value="Elimina">
+                                    <input type="submit" class="btn btn-primary ' . ($row["username"] == NULL ? "visually-hidden" : "") . '" name="requestType" value="Ritornato">
                                 </td>
                             </form>
                           </tr>';
@@ -118,10 +125,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 ?>
             </tbody>
         </table>
-
-        <form method="post" id="addForm">
-            <label for="addForm" class="form-label">Aggiungi Oggetti</label>
-            <div class="mb-3 ">
+        <label for="addForm" class="form-label">Aggiungi Oggetto</label>
+        <form class="row" method="post" id="addForm">
+            <div class="col-5">
                 <select class="form-select" id="centroList" name="centro" required>
                     <option selected disabled value="">Seleziona Centro...</option>
                     <?php
@@ -132,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                     ?>
                 </select>
             </div>
-            <div class="mb-3">
+            <div class="col-5">
                 <select class="form-select" id="categoriaList" name="categoria" required>
                     <option selected disabled value="">Seleziona Categoria...</option>
                     <option value="Computer">Computer</option>
@@ -142,7 +148,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                     <option value="Software">Software</option>
                 </select>
             </div>
-            <input type="submit" class="btn btn-primary" name="requestType" value="Aggiungi">
+            <div class="col-md-auto">
+                <input type="submit" class="btn btn-primary" name="requestType" value="Aggiungi">
+            </div>
         </form>
     </div>
     <?php
